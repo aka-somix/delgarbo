@@ -1,0 +1,55 @@
+#!/bin/bash
+echo ""
+echo ""
+echo ""
+echo "  _____         _   _____               _            "
+echo " |  __ \       | | / ____|             | |           "
+echo " | |  | |  ___ | || |  __   __ _  _ __ | |__    ___  "
+echo " | |  | | / _ \| || | |_ | / _. || .__||  _ \  / _ \ "
+echo " | |__| ||  __/| || |__| || (_| || |   | |_) || (_) |"
+echo " |_____/  \___||_| \_____| \__,_||_|   |_.__/  \___/ "
+echo "                                                     "
+echo "-----------------------------------------------------------------------------"
+echo "                                                     "
+
+# Check if a base prefix is provided
+if [ -z "$1" ]; then
+  echo "No base prefix found. Usage: $0 <base_prefix>"
+  echo "Example: sh tgcache_erase.sh ~/Projects"
+  exit 1
+fi
+
+# Store the base prefix
+base_prefix=$1
+
+echo "👀 ~ Looking for .terragrunt-cache folders inside $base_prefix"
+
+folders_to_delete=$(find $base_prefix -type d -name ".terragrunt-cache" 2>/dev/null)
+len=${#folders_to_delete[@]} 
+
+echo ""
+echo ""
+# Check if the result is empty
+if [ -z "$result" ]; then
+    echo "✅ ~ No .terragrunt-cache directories found"
+else
+    echo "📦 ~ $len folders found to be deleted"
+    echo ""
+    echo "💥 ~ Nuking all your cache directories. KABOOM!"
+
+    # Delete the found directories and their contents
+    echo "$folders_to_delete" | while read -r dir; do
+        echo "Deleting directory: $dir"
+        rm -rf "$dir"
+    done
+
+    echo ""
+    echo "🗿 - All your terragrunt caches have been successfully terminated.\n\n"
+fi
+
+echo ""
+echo "-----------------------------------------------------------------------------"
+echo "Made with 💓 by s.cirone@reply.it"
+echo "Please report any bug or suggestion 💪" 
+echo ""
+echo ""
