@@ -15,7 +15,7 @@ echo "                                                     "
 # Check if a base prefix is provided
 if [ -z "$1" ]; then
   echo "No base prefix found. Usage: $0 <base_prefix>"
-  echo "Example: sh tgcache_erase.sh ~/Projects"
+  echo "Example: delgarbo ~/Projects"
   exit 1
 fi
 
