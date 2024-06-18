@@ -30,7 +30,7 @@ len=${#folders_to_delete[@]}
 echo ""
 echo ""
 # Check if the result is empty
-if [ -z "$result" ]; then
+if [ -z "$folders_to_delete" ]; then
     echo "✅ ~ No .terragrunt-cache directories found"
 else
     echo "📦 ~ $len folders found to be deleted"
