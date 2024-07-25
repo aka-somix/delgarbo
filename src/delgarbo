@@ -1,4 +1,48 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# Function to display the help message
+show_help() {
+    echo "Usage: delgarbo [options] [path]"
+    echo
+    echo "Options:"
+    echo "  -h, --help    Show this help message and exit"
+    echo "  -p, --path    Specify the path to be stored and printed. Defaults to the first argument if omitted"
+    echo "  -t, --type    Specify the cache type to delete. Current values: [node, terragrunt, cdk]"
+    echo
+}
+
+print_tail() {
+    echo ""
+    echo "-----------------------------------------------------------------------------"
+    echo "Made with 💓 by https://github.com/aka-somix"
+    echo "Please report any bug or feature request 💪" 
+    echo ""
+    echo ""
+}
+
+# This function is needed as associative arrays are not available in 3.X bash (5.X or superior)
+# Although this is ugly as f it is still preferred for portability
+# TODO: look for better implementation
+get_folder_name() {
+    local input_string="$1"
+    # NODE MODULES
+    if [[ "$input_string" == "node" ]]; then
+        echo "node_modules"
+    # TERRAGRUNT
+    elif [[ "$input_string" == "terragrunt" ]]; then
+        echo ".terragrunt-cache"
+    # CDK
+    elif [[ "$input_string" == "cdk" ]]; then
+        echo "cdk.out"
+    else
+        echo "Invalid input"
+        return 1
+    fi
+}
+
+#
+# ------------------------ MAIN ------------------------ 
+#
 echo ""
 echo ""
 echo ""
@@ -12,29 +56,82 @@ echo "                                                     "
 echo "-----------------------------------------------------------------------------"
 echo "                                                     "
 
-# Check if a base prefix is provided
-if [ -z "$1" ]; then
-  echo "No base prefix found. Usage: $0 <base_prefix>"
-  echo "Example: delgarbo ~/Projects"
+# Store the base prefix
+base_path=""
+type=""
+typedir=""
+
+# Parse command-line arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            show_help
+            print_tail
+            exit 0
+            ;;
+        -p|--path)
+            if [[ -n $2 && $2 != -* ]]; then
+                base_path=$2
+                shift 2
+            else
+                echo "Error: --path requires a non-empty option argument."
+                print_tail
+                exit 1
+            fi
+            ;;
+        -t|--type)
+            if [[ -n $2 && $2 != -* ]]; then
+                type=$2
+                shift 2
+            else
+                echo "Error: --type requires one of the following values: node, terragrunt, cdk."
+                print_tail
+                exit 1
+            fi
+            ;;
+        *)
+            if [[ -z $base_path ]]; then
+                base_path=$1
+                shift
+            else
+                echo "Unknown option: $1"
+                show_help
+                print_tail
+                exit 1
+            fi
+            ;;
+    esac
+done
+
+# Check if path is empty
+if [ -z "$base_path" ]; then
+  echo "No base path found. Run \"delgarbo -h\" for getting usage help."
+  echo "Example: delgarbo ~/Projects -t node"
+  print_tail
   exit 1
 fi
 
-# Store the base prefix
-base_prefix=$1
+# Associate the type to the type directory
+if [[ -n $type ]]; then
+    typedir=$(get_folder_name $type)
+else
+  echo "No type specified. Run \"delgarbo -h\" for getting usage help."
+  echo "Example: delgarbo ~/Projects -t node"
 
-echo "👀 ~ Looking for .terragrunt-cache folders inside $base_prefix"
+  print_tail
+  exit 1
+fi
 
-folders_to_delete=$(find $base_prefix -type d -name ".terragrunt-cache" 2>/dev/null)
-len=${#folders_to_delete[@]} 
+echo "👀 ~ Looking for $typedir folders inside $base_path"
+
+folders_to_delete=$(find $base_path -type d -name "$typedir" 2>/dev/null)
 
 echo ""
 echo ""
 # Check if the result is empty
 if [ -z "$folders_to_delete" ]; then
-    echo "✅ ~ No .terragrunt-cache directories found"
+    echo "✅ ~ No $typedir directories found"
 else
-    echo "📦 ~ $len folders found to be deleted"
-    echo ""
     echo "💥 ~ Nuking all your cache directories. KABOOM!"
 
     # Delete the found directories and their contents
@@ -44,12 +141,7 @@ else
     done
 
     echo ""
-    echo "🗿 - All your terragrunt caches have been successfully terminated.\n\n"
+    echo "🗿 - All your terragrunt caches have been successfully terminated."
 fi
 
-echo ""
-echo "-----------------------------------------------------------------------------"
-echo "Made with 💓 by s.cirone@reply.it"
-echo "Please report any bug or suggestion 💪" 
-echo ""
-echo ""
+print_tail
