@@ -1,7 +1,7 @@
 # Delgarbo - DELetes GARBage On your laptop
 This script will gently delete all the garbage folders (caches mainly) that are filling up your machine and you no longer need.
 
-![2024-07-25 09-06-40](https://github.com/user-attachments/assets/aa0f895d-121b-46a6-bc71-909df7ffa076)
+![delgarbo](https://github.com/user-attachments/assets/d17c373f-b753-4fcd-8e5c-3daa3024c0c9)
 
 ## Usage
 Add execute privileges to the script
