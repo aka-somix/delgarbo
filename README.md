@@ -1,4 +1,4 @@
-# Delgarbo - DELete GARBage On your laptop
+# Delgarbo - DELetes GARBage On your laptop
 This script will gently delete all the garbage folders (caches mainly) that are filling up your machine and you no longer need.
 
 ## Usage
@@ -13,7 +13,7 @@ sh delgarbo <Base Path>
 Where `<Base Path>` could be any path (that your user has access to).
 Example:
 ```
-sh delgarbo ~/my/git/projects/path
+delgarbo ~/my/git/projects/path
 ```
 
 ### Base Path Suggestions
@@ -28,3 +28,11 @@ sudo cp delgarbo /usr/local/bin
 ```
 
 You are now ready to use it directly from wherever in your shell.
+
+## Cache folder Supported
+
+- [x] Node Modules  
+- [x] Terragrunt cache
+- [x] CDK out  
+- [ ] Python cache
+- [ ] *please suggest others*
